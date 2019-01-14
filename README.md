@@ -123,11 +123,11 @@ $.ajax ({
 
 -->
 
-# Coding-Night 2018
+# Vortrag "Einführung in die technische Realisierung von Automaten"
 
-**Evangelisches Gymnasium Doberlug-Kirchhain, 7. Dezember 2018**
+**Samuel-von-Pufendorf-Gymnasiums, 1. Februar 2019**
 
-Sebastian Zug, Technische Universität Bergakademie Freiberg
+Prof. Dr. Sebastian Zug, Technische Universität Bergakademie Freiberg
 
 ------------------------------
 
@@ -137,3 +137,11 @@ Sebastian Zug, Technische Universität Bergakademie Freiberg
 Herzlich Willkommen!
 
 ## 1. Einführung
+
+## 2. Motivation des Beispiels
+
+## 3. Entwurf des Automaten
+
+## 4. Realsierung in der Simulation
+
+## 5. Umsetzung auf dem Steckbrett
