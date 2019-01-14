@@ -140,6 +140,29 @@ Herzlich Willkommen!
 
 ## 2. Motivation des Beispiels
 
+<!--
+style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+-->
+````
+
+                   I      II       III     IV       Zustand
+ 
+                  .-.     .-.      .-.     .-.
+  Rot            ( X )   ( X )    (   )   (   )
+                  '-'     '-'      '-'     '-'
+                  .-.     .-.      .-.     .-.
+  Gelb           (   )   ( X )    (   )   ( X )
+                  '-'     '-'      '-'     '-'
+                  .-.     .-.      .-.     .-.
+  Grün           (   )   (   )    ( X )   (   )
+                  '-'     '-'      '-'     '-'
+ 
+               .-> 2s ---> 2s ---> 100s ---> 2s -.
+               |                                 |
+               `---------------------------------`
+````
+
+
 ## 3. Entwurf des Automaten
 
 ## 4. Realsierung in der Simulation
