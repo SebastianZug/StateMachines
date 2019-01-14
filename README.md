@@ -140,12 +140,13 @@ Herzlich Willkommen!
 
 ## 2. Motivation des Beispiels
 
+Geben Sie die Phasen einer Ampel wieder, welche der Zeitphasen sind durch die StVZO geregelt und welche können frei gewählt werden?
+
 <!--
 style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
 -->
 ````
-
-                   I      II       III     IV       Zustand
+                   1      2         3      4       Zustand
  
                   .-.     .-.      .-.     .-.
   Rot            ( X )   ( X )    (   )   (   )
@@ -162,8 +163,40 @@ style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-r
                `---------------------------------`
 ````
 
+<!--
+style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+-->
+````
+  __|____
+               ┌-----------┐
+        2S  -->|           |
+      100S  -->|  Ampel-   |
+               |           |---*--> Rot
+          .--->|           |--*+--> Gelb
+          |.-->| steuerung |-*++--> Grün
+          ||.->|           | |||
+          |||  └-----------┘ |||
+          ||'----------------'||
+          |'------------------'|
+          '--------------------'
+````
 
 ## 3. Entwurf des Automaten
+
+<!--
+style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+-->
+````
+ 
+                   .-- 2s --. .-- 2s --. .- 100s -.
+                   |        v |        v |        v
+                  .-.       .-.        .-.       .-.
+  Rot            ( 1 )     ( 2 )      ( 3 )     ( 4 )
+                  '-'       '-'        '-'       '-'
+                   ^                              |
+                   '------------- 2s -------------'
+````
+
 
 ## 4. Realsierung in der Simulation
 
