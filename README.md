@@ -289,6 +289,9 @@ FF1' = !2_s und 100_s und FF2 und !FF1 oder
 
 ## 4. Realsierung in der Simulation
 
+Warum brauchen wir einen Takt?
+
+
 ## 5. Umsetzung auf dem Steckbrett
 
 ## 6. Zusammenfassung und Ausblick
