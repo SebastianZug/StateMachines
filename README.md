@@ -138,16 +138,22 @@ Herzlich Willkommen!
 
 ## 1. Einführung
 
+Studium der Angewandten Informatik an der Technischen Bergakademie Freiberg
+
 ## 2. Motivation des Beispiels
+
+Wieviel Informatik steckt in einer Ampel?
+
+### Analyse des Systems
 
 Geben Sie die Phasen einer Ampel wieder, welche der Zeitphasen sind durch die StVZO geregelt und welche können frei gewählt werden?
 
 <!--
-style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
 -->
 ````
                    1      2         3      4       Zustand
- 
+
                   .-.     .-.      .-.     .-.
   Rot            ( X )   ( X )    (   )   (   )
                   '-'     '-'      '-'     '-'
@@ -157,16 +163,20 @@ style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-r
                   .-.     .-.      .-.     .-.
   Grün           (   )   (   )    ( X )   (   )
                   '-'     '-'      '-'     '-'
- 
+
                .-> 2s ---> 2s ---> 100s ---> 2s -.
                |                                 |
-               `---------------------------------`
+               .---------------------------------.
 ````
+
+### Technische Realsierung
 
 <!--
 style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
 -->
 ````
+  EINGABEN                         AUSGABEN
+
   __|____
                ┌-----------┐
         2S  -->|           |
@@ -181,23 +191,114 @@ style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-r
           '--------------------'
 ````
 
+Eingaben: 2_s beendet und 100_s bedendet
+Ausgaben: Rot an, Gelb an, Grün an
+
 ## 3. Entwurf des Automaten
 
+### Idee
+
+
+
+
+
+### ... angewandt auf die Ampel
 <!--
-style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
 -->
 ````
- 
+                             Transitionen
+
                    .-- 2s --. .-- 2s --. .- 100s -.
                    |        v |        v |        v
                   .-.       .-.        .-.       .-.
-  Rot            ( 1 )     ( 2 )      ( 3 )     ( 4 )
+Ampelzustände    ( 0 )     ( 1 )      ( 2 )     ( 3 )
                   '-'       '-'        '-'       '-'
                    ^                              |
-                   '------------- 2s -------------'
+                   .------------- 2s -------------.
 ````
 
+__Schrittweises einblenden der Tabelle!__
+
+| 2_s | 100_s |  Zustand  | Zustand' |
+|  0  |  0    |    0      |   0      |
+|  0  |  0    |    1      |   1      |
+|  0  |  0    |    2      |   2      |
+|  0  |  0    |    3      |   3      |
+|  0  |  1    |    0      |   0      |
+|  0  |  1    |    1      |   1      |
+|  0  |  1    |    2      |   3      |
+|  0  |  1    |    3      |   3      |
+|  1  |  0    |    ...    |   ...    |
+
+Abbildung der Zustände durch einen binären Speicher (Flip-Flop)
+
+| Zustand | FF2      | FF1     |
+|:--------|:---------|:--------|
+|  0      |   0      |   0     |
+|  1      |   0      |   1     |
+|  2      |   1      |   0     |
+|  3      |   1      |   1     |
+
+| Zustand | FF2      | FF1     |  Rot    | Gelb     | Grün    |
+|:--------|:---------|:--------|:--------|:---------|:--------|
+|  0      |   0      |   0     |  1      |   0      |   0     |
+|  1      |   0      |   1     |  1      |   1      |   0     |
+|  2      |   1      |   0     |  0      |   0      |   1     |
+|  3      |   1      |   1     |  0      |   1      |   0     |
+
+Rot = !FF2 und !FF1 oder !FF2 und FF1 = !FF2
+Gelb = !FF2 und FF1 oder FF2 und FF1 = FF1
+Grün = FF2 und !FF1
+
+Zwischenstand
+
+
+
+Übertragung auf die Zustandstabelle
+
+| 2_s | 100_s |  FF2  | FF1  |
+|  0  |  0    |   0   |   0  |
+|  0  |  0    |   0   |   1  |
+|  0  |  0    |   1   |   0  |
+|  0  |  0    |   1   |   1  |
+|  0  |  1    |   0   |   0  |
+|  0  |  1    |   0   |   0  |
+
+| 2_s | 100_s |  FF2  | FF1  |  FF2' | FF1' |
+|  0  |  0    |   0   |   0  |   0   |   0  |
+|  0  |  0    |   0   |   1  |   0   |   1  |
+|  0  |  0    |   1   |   0  |   1   |   0  |
+|  0  |  0    |   1   |   1  |   1   |   1  |
+|  0  |  1    |   0   |   0  |   0   |   0  |
+|  0  |  1    |   0   |   0  |   0   |   0  |
+
+Welche Einträge sind denn überhaupt relevant?
+
+| 2_s | 100_s |  FF2  | FF1  |  FF2' | FF1' |
+|  0  |  1    |   1   |   0  |   1   |   1  |
+|  1  |  0    |   0   |   0  |   0   |   1  |
+|  1  |  0    |   0   |   1  |   1   |   0  |
+|  1  |  0    |   1   |   1  |   0   |   0  |
+
+FF2' = !2_s und 100_s und FF2 und !FF1 oder
+        2_s und !100_s und !FF2 und FF1
+
+FF1' = !2_s und 100_s und FF2 und !FF1 oder
+       2_s und !100_s und !FF2 und !FF1
 
 ## 4. Realsierung in der Simulation
 
 ## 5. Umsetzung auf dem Steckbrett
+
+## 6. Zusammenfassung und Ausblick
+
+Ablauf beim Aufstellen eines Automaten
+
+1. Analyse des Systems, Identifikation von Eingängen, Ausgängen und Zuständen
+2. Modellierung als Automat
+3. Aufstellen der Wahrheitstafel
+4. Ableiten der Schaltfunktionen
+5. Realisieren des Schaltwerkes
+
+Mängel unserer Lösung
