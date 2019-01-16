@@ -509,12 +509,10 @@ iframe.contentWindow.location.replace("https://liascript.github.io/logicemu_temp
 "LIA: stop";
 </script>
 
-<iframe id="logic_emu@0" width="100%" height="600px" src=""></iframe>
+<iframe id="logic_emu@0" width="100%" height="400px" src=""></iframe>
 
 @end
-
 -->
-
 
 # Vortrag "Einführung in die technische Realisierung von Automaten"
 
