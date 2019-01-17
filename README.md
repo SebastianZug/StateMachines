@@ -537,13 +537,23 @@ Wieviel Informatik steckt in einer Ampel?
 
 ### Analyse des Systems
 
-Geben Sie die Phasen einer Ampel wieder, welche der Zeitphasen sind durch die StVZO geregelt und welche können frei gewählt werden?
+Unsere Herausforderung heute ... Implementierung einer einzelnen
+Ampelanlage.
+
+![Welcome](images/Ampelsimulation.gif "Ampelablauf")<!-- width="10%" --> [^1]
+
+[^1]:https://wiki.byte-welt.net/wiki/Simulation_einer_Verkehrsampel
+
+Wie würden Sie den Ablauf beschreiben?
+
++ 4 Phasen - Rot, Rot-Gelb, Grün, Gelb
++ Bestimmte Zeitintervalle dazwischen
 
 <!--
 style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
 -->
 ````
-                   1      2         3      4       Zustand
+                   0       1        2       3       Zustand
 
                   .-.     .-.      .-.     .-.
   Rot            ( X )   ( X )    (   )   (   )
@@ -560,30 +570,29 @@ style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-r
                .---------------------------------.
 ````
 
-### Technische Realsierung
+### Zielstellung
 
 <!--
 style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
 -->
 ````
-  EINGABEN                         AUSGABEN
+ EINGABEN                                  AUSGABEN
 
-  __|____
-               ┌-----------┐
-        2S  -->|           |
-      100S  -->|  Ampel-   |
-               |           |---*--> Rot
-          .--->|           |--*+--> Gelb
-          |.-->| steuerung |-*++--> Grün
-          ||.->|           | |||
-          |||  └-----------┘ |||
-          ||'----------------'||
-          |'------------------'|
-          '--------------------'
+ Taktgeber            ╔═══════════╗
+ ┴┴┴┴┴┴┴┴┴┴    2S  -->║           ║
+ ┴───...──┴  100S  -->║   Ampel-  ║
+                      ║           ║───┬──> Rot
+                 .--->║           ║──┬┼──> Gelb
+                 |.-->║ steuerung ║─┬┼┼──> Grün
+                 ||.->║           ║ │││
+                 |||  ╚═══════════╝ │││
+                 ||'----------------╯││
+                 |'------------------╯│
+                 '--------------------╯
 ````
 
-Eingaben: 2_s beendet und 100_s bedendet
-Ausgaben: Rot an, Gelb an, Grün an
+Wie setzen wir die Anwendung um?
+
 
 ## 3. Entwurf des Automaten
 
