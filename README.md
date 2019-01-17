@@ -524,16 +524,17 @@ Prof. Dr. Sebastian Zug, Technische Universität Bergakademie Freiberg
 
 ![Welcome](images/WorkingDesk.jpg "Experiments")<!-- width="80%" -->
 
-
-Herzlich Willkommen!
-
 ## 1. Einführung
 
 Studium der Angewandten Informatik an der Technischen Bergakademie Freiberg
 
+![Welcome](images/AInfFreiberg.jpeg "Überblick")<!-- width="80%" -->
+
 ## 2. Motivation des Beispiels
 
 Wieviel Informatik steckt in einer Ampel?
+
+Vernetzung im Straßenverkehr, Koordination Verkehrsfluss
 
 ### Analyse des Systems
 
@@ -617,9 +618,27 @@ style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-r
                   |                              |
                   .------------- 2s -------------.
 ````
+Wie verhält sich unser System für verschiedenen Kombinationen der Variablen 2s und 100s?
 
-__Schrittweises einblenden der Tabelle!__
+    {{0-1}}
+| 2_s | 100_s |  Zustand  | Zustand' |
+|  0  |  0    |    0      |   0      |
+|  0  |  0    |    1      |   1      |
+|  0  |  0    |    2      |   2      |
+|  0  |  0    |    3      |   3      |
 
+    {{1-2}}
+| 2_s | 100_s |  Zustand  | Zustand' |
+|  0  |  0    |    0      |   0      |
+|  0  |  0    |    1      |   1      |
+|  0  |  0    |    2      |   2      |
+|  0  |  0    |    3      |   3      |
+|  0  |  1    |    0      |   0      |
+|  0  |  1    |    1      |   1      |
+| <span style="color:red"> 0 </span> |  <span style="color:red"> 1 </span>     |    <span style="color:red"> 3 </span>       |  <span style="color:red"> 3 </span>      |
+|  0  |  1    |    3      |   3      |
+
+    {{3}}
 | 2_s | 100_s |  Zustand  | Zustand' |
 |  0  |  0    |    0      |   0      |
 |  0  |  0    |    1      |   1      |
@@ -629,8 +648,8 @@ __Schrittweises einblenden der Tabelle!__
 |  0  |  1    |    1      |   1      |
 |  0  |  1    |    2      |   3      |
 |  0  |  1    |    3      |   3      |
-|  1  |  0    |    ...    |   ...    |
 
+    {{2-3}}
 Abbildung der Zustände durch einen binären Speicher (Flip-Flop)
 
 | Zustand | FF2      | FF1     |
