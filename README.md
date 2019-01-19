@@ -532,9 +532,18 @@ Studium der Angewandten Informatik an der Technischen Bergakademie Freiberg
 
 ## 2. Motivation des Beispiels
 
-Wieviel Informatik steckt in einer Ampel?
+Wieviel Informatik steckt in einer Verkehrsampel?
 
-Vernetzung im Straßenverkehr, Koordination Verkehrsfluss
+![Welcome](images/AmpelDresden-klein.jpg "Überblick")<!-- width="80%" -->
+
+Zielstellung: Koordination des Verkehrsflusses
+
+Technische Herausforderungen:
+* Vernetzung und Koordination der Ampeln selbst,
+* Adaption des Verhaltens
+* Interaktion mit den Verkehrsteilnehmern
+
+**Wir wollen eine Ampel mit Logikgattern und Speichern umsetzen!**
 
 ### Analyse des Systems
 
@@ -597,11 +606,50 @@ Wie setzen wir die Anwendung um?
 
 ## 3. Entwurf des Automaten
 
-### Idee
+**Einführungsbeispiel**
 
+Ein endlicher Automat (auch Zustandsmaschine, Zustandsautomat) ist ein Modell
+eines Verhaltens, bestehend aus Zuständen, Zustandsübergängen und Aktionen.
 
+Eine Tür lässt sich zum Beispiel mit zwei Zuständen beschreiben "auf" und "zu"
 
+<!--
+style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+-->
+````
+                  .--------- schließen ----------.     Zustandsübergang
+                  |                              |      (Transition)
+                  |                              v
+                 .-.                            .-.
+ Zustände       (auf)                          (zu )
+                 '-'                            '-'
+                  ^                              |
+                  |                              |
+                  .----------- öffnen -----------.
+````
 
+{{1-4}} Der Übergang lässt sich dabei mit einer *Zustandsübergangstabelle* darstellen.
+
+{{1-4}}
+| Eingabe    | alter Zustand | neuer Zustand |
+|:-----------|:--------------|:--------------|
+| öffnen     | offen         | offen         |
+| öffnen     | zu            | offen         |
+| schließen  | offen         | zu            |
+| schließen  | zu            | zu            |
+
+{{2-4}} Ausgehend vom Zustand soll nun noch eine Ausgabe erfolgen, zum Beispiel
+ein Warnlicht aktiviert werden
+
+{{2-4}}
+| Zustand | Ausgabe         |
+|:--------|:----------------|
+| offen   | Warnlicht       |
+| zu      | Warnlicht aus   |
+
+{{3-4}}
+> Zusammenfassung: Ein endlicher Automat bildet Eingabegrößen E auf Zustände Z
+> und Ausgabegrößen A ab.
 
 ### ... angewandt auf die Ampel
 <!--
@@ -620,87 +668,154 @@ style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-r
 ````
 Wie verhält sich unser System für verschiedenen Kombinationen der Variablen 2s und 100s?
 
-    {{0-1}}
-| 2_s | 100_s |  Zustand  | Zustand' |
+{{0-1}} Eingaben
+
+{{0-1}}
+* `2s` ... ein zwei Sekundentimer generiert einen Wert "1", dazwischen hat der Eingang den Wert "0"
+* `100s` ... ein 100-Sekundentimer generiert einen Wert "1"
+
+{{1-2}}
+| 2s  | 100s  |  Zustand  | Zustand neu |
+|:----|:------|:----------|:---------|
 |  0  |  0    |    0      |   0      |
 |  0  |  0    |    1      |   1      |
 |  0  |  0    |    2      |   2      |
 |  0  |  0    |    3      |   3      |
 
-    {{1-2}}
-| 2_s | 100_s |  Zustand  | Zustand' |
-|  0  |  0    |    0      |   0      |
-|  0  |  0    |    1      |   1      |
-|  0  |  0    |    2      |   2      |
-|  0  |  0    |    3      |   3      |
+{{2-3}}
+| 2s  | 100s |  Zustand  | Zustand' |
+|:----|:------|:----------|:---------|
 |  0  |  1    |    0      |   0      |
 |  0  |  1    |    1      |   1      |
-| <span style="color:red"> 0 </span> |  <span style="color:red"> 1 </span>     |    <span style="color:red"> 3 </span>       |  <span style="color:red"> 3 </span>      |
+| <span style="color:red"> 0 </span> |  <span style="color:red"> 1 </span>     |    <span style="color:red"> 2 </span>       |  <span style="color:red"> 3 </span>      |
 |  0  |  1    |    3      |   3      |
 
-    {{3}}
-| 2_s | 100_s |  Zustand  | Zustand' |
-|  0  |  0    |    0      |   0      |
-|  0  |  0    |    1      |   1      |
-|  0  |  0    |    2      |   2      |
-|  0  |  0    |    3      |   3      |
-|  0  |  1    |    0      |   0      |
-|  0  |  1    |    1      |   1      |
-|  0  |  1    |    2      |   3      |
-|  0  |  1    |    3      |   3      |
+{{3-4}}
+| 2s  | 100s |  Zustand  | Zustand' |
+|:----|:------|:----------|:---------|
+| <span style="color:red"> 1</span> |  <span style="color:red"> 0 </span>     |    <span style="color:red"> 1 </span>       |  <span style="color:red"> 3 </span>      |
+| <span style="color:red"> 1</span> |  <span style="color:red"> 1 </span>     |    <span style="color:red"> 1 </span>       |  <span style="color:red"> 2 </span>      |
+|  1  |  0    |    2      |   2      |
+| <span style="color:red"> 1</span> |  <span style="color:red"> 3 </span>     |    <span style="color:red"> 1 </span>       |  <span style="color:red"> 0 </span>      |
 
-    {{2-3}}
-Abbildung der Zustände durch einen binären Speicher (Flip-Flop)
+{{4-5}}
+Die Kombination `2_s = 1` und `100s = 1` bleibt hier unbeachtet.
 
-| Zustand | FF2      | FF1     |
-|:--------|:---------|:--------|
-|  0      |   0      |   0     |
-|  1      |   0      |   1     |
-|  2      |   1      |   0     |
-|  3      |   1      |   1     |
+### Jetzt wird es digital
 
-| Zustand | FF2      | FF1     |  Rot    | Gelb     | Grün    |
+> Für die Repräsentation der Zustände nutzen wir digitale Speicher - **Flip-Flops**.
+> Folglich müssen unsere Zustande auch mit `0` und `1` codiert werden.
+
+Abbildung der Zustände durch einen binären Speicher, sogen. Flip-Flops (FF), wobei ein
+einzelner Flip-Flop ein Bit, also zwei unterschiedliche Zustände speichern
+kann.
+
+```D-FlipFlop.asci
+"Input"   s----->d----->l
+                 #
+"Clock"   p----->c
+```
+@logic_emu
+
+Wie viele Flip-Flops brauchen wir für unsere Ampel?
+
+{{1-3}}
+<!--
+style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+-->
+````
+                  .-- 2s --. .-- 2s --. .- 100s -.
+                  |        | |        | |        |
+                  |        v |        v |        v
+                 .-.       .-.        .-.       .-.
+ Ampelzustände  ( 0 )     ( 1 )      ( 2 )     ( 3 )
+                 '-'\     /'-'        '-'\     /'-'
+                  ^   FF1                  FF2   |
+                  |                              |
+                  .------------- 2s -------------.
+````
+
+{{2-3}}
+| Ampelphase | Zustand | FF2      | FF1     |
+|:-----------|:--------|:---------|:--------|
+| Rot        |  0      |   0      |   0     |
+| Rot-Gelb   |  1      |   0      |   1     |
+| Grün       |  2      |   1      |   0     |
+| Gelb       |  3      |   1      |   1     |
+
+
+
+### Ableitung der Gleichungen
+
+Soweit so gut, aber wie können wir ein System entwerfen, dass
+* zwischen diesen Zuständen entsprechend den Eingaben wechselt
+* die Ausgaben generiert
+
+Noch mal die Idee ...
+
+<!--
+style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+-->
+````
+ EINGABEN E              CLOCK C           AUSGABEN A
+                            v
+ Taktgeber            ╔═══════════╗
+ ┴┴┴┴┴┴┴┴┴┴    2S  -->║           ║──────> Rot
+ ┴───...──┴  100S  -->║   Ampel-  ║──────> Gelb
+                      ║           ║──────> Grün
+                 .--->║           ║───╮
+                 |.-->║   Logik   ║--╮│
+                 ||.->║           ║-╮││
+                 |||  ╚═══════════╝ │││
+  ZUSTAND' Z'    ||'----------------╯││
+                 |'------------------╯│
+                 '--------------------╯
+````
+$$A = f(Z)$$
+$$Z' = Z + E$$
+
+
+{{1-3}}
+** Schritt 1 - Ausgabefunktionen A**
+
+{{1-3}}
+| Zustand | FF2      | FF1     |  A_Rot  | A_Gelb   | A_Grün  |
 |:--------|:---------|:--------|:--------|:---------|:--------|
 |  0      |   0      |   0     |  1      |   0      |   0     |
 |  1      |   0      |   1     |  1      |   1      |   0     |
 |  2      |   1      |   0     |  0      |   0      |   1     |
 |  3      |   1      |   1     |  0      |   1      |   0     |
 
-Rot = !FF2 und !FF1 oder !FF2 und FF1 = !FF2
-Gelb = !FF2 und FF1 oder FF2 und FF1 = FF1
-Grün = FF2 und !FF1
+{{2-3}}
+$$A_{Rot} = (!FF_2 + !FF_1) \cdot (!FF_2 + FF_1) = !FF_2$$
+$$A_{Gelb} = (!FF_2 + FF_1) \cdot (FF_2 + FF_1) = FF_1$$
+$$A_{Grün} = FF_2 \cdot !FF_1$$
 
-Zwischenstand
+{{3-5}}
+** Schritt 2 - Zustandsübergangsfunktion Z**
+
+{{3-5}}
+| 2_s | 100_s | Z | FF2 | FF1 | Z' | FF2' | FF1' |
+|-----|-------|---|-----|-----|----|------|------|
+| 0   | 0     | 0 | 0   | 0   | 0  | 0    | 0    |
+| 0   | 0     | 1 | 0   | 1   | 1  | 0    | 1    |
+| 0   | 0     | 2 | 1   | 0   | 2  | 1    | 0    |
+| 0   | 0     | 3 | 1   | 1   | 3  | 1    | 1    |
+| 0   | 1     | 0 | 0   | 0   | 0  | 0    | 0    |
+| 0   | 1     | 1 | 0   | 1   | 1  | 0    | 1    |
+| 0   | 1     | 2 | 1   | 0   | 3  | 1    | 1    |
+| 0   | 1     | 3 | 1   | 1   | 3  | 1    | 1    |
+| 1   | 0     | 0 | 0   | 0   | 1  | 0    | 1    |
+| 1   | 0     | 1 | 0   | 1   | 2  | 1    | 0    |
+| 1   | 0     | 2 | 1   | 0   | 2  | 1    | 0    |
+| 1   | 0     | 3 | 1   | 1   | 0  | 0    | 0    |
 
 
-
-Übertragung auf die Zustandstabelle
-
-| 2_s | 100_s |  FF2  | FF1  |
-|  0  |  0    |   0   |   0  |
-|  0  |  0    |   0   |   1  |
-|  0  |  0    |   1   |   0  |
-|  0  |  0    |   1   |   1  |
-|  0  |  1    |   0   |   0  |
-|  0  |  1    |   0   |   0  |
-
-| 2_s | 100_s |  FF2  | FF1  |  FF2' | FF1' |
-|  0  |  0    |   0   |   0  |   0   |   0  |
-|  0  |  0    |   0   |   1  |   0   |   1  |
-|  0  |  0    |   1   |   0  |   1   |   0  |
-|  0  |  0    |   1   |   1  |   1   |   1  |
-|  0  |  1    |   0   |   0  |   0   |   0  |
-|  0  |  1    |   0   |   1  |   0   |   1  |
-|  0  |  1    |   1   |   0  |   1   |   1  |
-|  0  |  1    |   1   |   1  |   1   |   1  |
-|  1  |  0    |   0   |   0  |   0   |   1  |
-|  1  |  0    |   0   |   1  |   1   |   0  |
-|  1  |  0    |   1   |   0  |   1   |   0  |
-|  1  |  0    |   1   |   1  |   0   |   0  |
-
+{{4-5}}
 Wie kann man diese Wertetabellen minimieren?
 
-```python
+{{4-5}}
+```python       solveBoolFunc.py
 from sympy.logic import SOPform
 from sympy import symbols
 
@@ -725,23 +840,27 @@ result = SOPform([x3, x2, x1, x0], FF2_minterms)
 print "FF2 = " + str(result)
 ```
 
-Lösung
+{{4-5}}
 ```
 FF1 = (FF1 & ~2s) | (100s & FF2 & ~2s) | (2s & ~100s & ~FF1 & ~FF2)
 FF2 = (FF2 & ~2s) | (FF2 & ~100s & ~FF1) | (2s & FF1 & ~100s & ~FF2)
 ```
 
+{{4-5}}
+$$FF_1 =(FF_1 \cdot !2s) + (!2s \cdot 100s \cdot FF_2 ) + (2s \cdot !100s \cdot !FF_1 \cdot !FF_2)$$
+$$FF_2 =(FF_2 \cdot !2s) + (!100s \cdot FF_2 \cdot !FF_1) + (2s \cdot !100s \cdot FF_1 \cdot !FF_2)$$
 
 ## 4. Realsierung in der Simulation
 
-Beispiel für Simulationsumgebung
+Warum eigentlich Simulation?
+
+
 
 
 
 Warum brauchen wir einen Takt?
 
 ```-ampel.asci
-
 "2s 100s"          p"Clock"
   s s              *
   * *   *----------+----*  *-->O-->l0
@@ -772,9 +891,7 @@ Warum brauchen wir einen Takt?
 ```
 @logic_emu
 
-## 5. Umsetzung auf dem Steckbrett
-
-## 6. Zusammenfassung und Ausblick
+## 5. Zusammenfassung und Ausblick
 
 __Ablauf beim Aufstellen eines Automaten__
 
@@ -784,5 +901,8 @@ __Ablauf beim Aufstellen eines Automaten__
 4. Ableiten der Schaltfunktionen
 5. Realisieren des Schaltwerkes
 
-__Mängel unserer Lösung__
-* keine Berücksichtigung von gleichzeitig aktivem 2s und 100s
+__Mängel oder Fragen hinsichtlich unserer Lösung__
+* Keine Berücksichtigung von gleichzeitig aktivem 2s und 100s
+* Wie setzen wir die Timer um?
+
+Vielen Dank für Ihr Interesse ...
