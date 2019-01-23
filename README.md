@@ -514,7 +514,7 @@ iframe.contentWindow.location.replace("https://liascript.github.io/logicemu_temp
 @end
 -->
 
-# Vortrag "Einführung in die technische Realisierung von Automaten"
+# Vortrag "Anwendung und Realisierung von boolschen Funktionen"
 
 **Samuel-von-Pufendorf-Gymnasiums, 1. Februar 2019**
 
@@ -530,6 +530,8 @@ Studium der Angewandten Informatik an der Technischen Bergakademie Freiberg
 
 ![Welcome](images/AInfFreiberg.jpeg "Überblick")<!-- width="80%" -->
 
+*"Hacken kann jeder, da brauche ich kein \[Informatik-\] Studium"* \[Forenbeitrag\]
+
 ## 2. Motivation des Beispiels
 
 Wieviel Informatik steckt in einer Verkehrsampel?
@@ -543,7 +545,7 @@ Technische Herausforderungen:
 * Adaption des Verhaltens
 * Interaktion mit den Verkehrsteilnehmern
 
-**Wir wollen eine Ampel mit Logikgattern und Speichern umsetzen!**
+**Wir wollen eine einzige Ampel mit einer Softwarelösung und einer Hardwarelösung umsetzen!**
 
 ### Analyse des Systems
 
@@ -565,19 +567,19 @@ style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-r
 ````
                    0       1        2       3       Zustand
 
-                  .-.     .-.      .-.     .-.
-  Rot            ( X )   ( X )    (   )   (   )
-                  '-'     '-'      '-'     '-'
-                  .-.     .-.      .-.     .-.
-  Gelb           (   )   ( X )    (   )   ( X )
-                  '-'     '-'      '-'     '-'
-                  .-.     .-.      .-.     .-.
-  Grün           (   )   (   )    ( X )   (   )
-                  '-'     '-'      '-'     '-'
+                  .-.     .-.      .-.      .-.
+  Rot            ( X )   ( X )    (   )    (   )
+                  '-'     '-'      '-'      '-'
+                  .-.     .-.      .-.      .-.
+  Gelb           (   )   ( X )    (   )    ( X )
+                  '-'     '-'      '-'      '-'
+                  .-.     .-.      .-.      .-.
+  Grün           (   )   (   )    ( X )    (   )
+                  '-'     '-'      '-'      '-'
 
-               .-> 2s ---> 2s ---> 100s ---> 2s -.
-               |                                 |
-               .---------------------------------.
+             .-> 100s ---> 2s ---> 100s ---> 2s -.
+             |                                   |
+             .-----------------------------------.
 ````
 
 ### Zielstellung
@@ -601,7 +603,8 @@ style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-r
                  '--------------------╯
 ````
 
-Wie setzen wir die Anwendung um?
+Wie entwerfen wir eine Abstraktion, die diese Zusammenhänge abbildet und auf
+verschiedenen Hardwareebenen realisierbar ist?
 
 
 ## 3. Entwurf des Automaten
@@ -613,12 +616,16 @@ eines Verhaltens, bestehend aus Zuständen, Zustandsübergängen und Aktionen.
 
 Eine Tür lässt sich zum Beispiel mit zwei Zuständen beschreiben "auf" und "zu"
 
+Bespiel:
+
 <!--
-style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+style="width: 100%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
 -->
 ````
-                  .--------- schließen ----------.     Zustandsübergang
-                  |                              |      (Transition)
+                  Zustandsübergang (Transition)
+
+                  .--------- schließen ----------.
+                  |                              |
                   |                              v
                  .-.                            .-.
  Zustände       (auf)                          (zu )
@@ -631,7 +638,7 @@ style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-r
 {{1-4}} Der Übergang lässt sich dabei mit einer *Zustandsübergangstabelle* darstellen.
 
 {{1-4}}
-| Eingabe    | alter Zustand | neuer Zustand |
+| Eingabe $E$   | alter Zustand $Z$ | neuer Zustand $Z'$ |
 |:-----------|:--------------|:--------------|
 | öffnen     | offen         | offen         |
 | öffnen     | zu            | offen         |
@@ -642,21 +649,21 @@ style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-r
 ein Warnlicht aktiviert werden
 
 {{2-4}}
-| Zustand | Ausgabe         |
-|:--------|:----------------|
-| offen   | Warnlicht       |
-| zu      | Warnlicht aus   |
+| Zustand $Z$ | Ausgabe   $A$   |
+|:------------|:----------------|
+| offen       | Warnlicht       |
+| zu          | Warnlicht aus   |
 
 {{3-4}}
-> Zusammenfassung: Ein endlicher Automat bildet Eingabegrößen E auf Zustände Z
-> und Ausgabegrößen A ab.
+> Zusammenfassung: Ein endlicher Automat bildet Eingabegrößen $E$ auf Zustände $Z$
+> und Ausgabegrößen $A$ ab.
 
 ### ... angewandt auf die Ampel
 <!--
 style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
 -->
 ````
-                  .-- 2s --. .-- 2s --. .- 100s -.
+                  .- 100s -. .-- 2s --. .- 100s -.
                   |        | |        | |        |
                   |        v |        v |        v
                  .-.       .-.        .-.       .-.
@@ -668,10 +675,10 @@ style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-r
 ````
 Wie verhält sich unser System für verschiedenen Kombinationen der Variablen 2s und 100s?
 
-{{0-1}} Eingaben
+{{0-1}} Eingaben $E$
 
 {{0-1}}
-* `2s` ... ein zwei Sekundentimer generiert einen Wert "1", dazwischen hat der Eingang den Wert "0"
+* `2s` ... ein Timer generiert kurzzeitig eine  "1", wenn ein 2 Sekundenintervall abgelaufen ist, dazwischen hat der Eingang den Wert "0"
 * `100s` ... ein 100-Sekundentimer generiert einen Wert "1"
 
 {{1-2}}
@@ -685,7 +692,7 @@ Wie verhält sich unser System für verschiedenen Kombinationen der Variablen 2s
 {{2-3}}
 | 2s  | 100s |  Zustand  | Zustand' |
 |:----|:------|:----------|:---------|
-|  0  |  1    |    0      |   0      |
+| <span style="color:red"> 0 </span> |  <span style="color:red"> 1 </span>     |    <span style="color:red"> 0 </span>       |  <span style="color:red"> 1 </span>      |
 |  0  |  1    |    1      |   1      |
 | <span style="color:red"> 0 </span> |  <span style="color:red"> 1 </span>     |    <span style="color:red"> 2 </span>       |  <span style="color:red"> 3 </span>      |
 |  0  |  1    |    3      |   3      |
@@ -693,10 +700,10 @@ Wie verhält sich unser System für verschiedenen Kombinationen der Variablen 2s
 {{3-4}}
 | 2s  | 100s |  Zustand  | Zustand' |
 |:----|:------|:----------|:---------|
-| <span style="color:red"> 1</span> |  <span style="color:red"> 0 </span>     |    <span style="color:red"> 1 </span>       |  <span style="color:red"> 3 </span>      |
-| <span style="color:red"> 1</span> |  <span style="color:red"> 1 </span>     |    <span style="color:red"> 1 </span>       |  <span style="color:red"> 2 </span>      |
+|  1  |  0    |    0      |   0      |
+| <span style="color:red"> 1</span> |  <span style="color:red"> 0 </span>     |    <span style="color:red"> 1 </span>       |  <span style="color:red"> 2 </span>      |
 |  1  |  0    |    2      |   2      |
-| <span style="color:red"> 1</span> |  <span style="color:red"> 3 </span>     |    <span style="color:red"> 1 </span>       |  <span style="color:red"> 0 </span>      |
+| <span style="color:red"> 1</span> |  <span style="color:red"> 0 </span>     |    <span style="color:red"> 3 </span>       |  <span style="color:red"> 0 </span>      |
 
 {{4-5}}
 Die Kombination `2_s = 1` und `100s = 1` bleibt hier unbeachtet.
@@ -724,7 +731,7 @@ Wie viele Flip-Flops brauchen wir für unsere Ampel?
 style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
 -->
 ````
-                  .-- 2s --. .-- 2s --. .- 100s -.
+                  .- 100s -. .-- 2s --. .- 100s -.
                   |        | |        | |        |
                   |        v |        v |        v
                  .-.       .-.        .-.       .-.
@@ -742,8 +749,6 @@ style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-r
 | Rot-Gelb   |  1      |   0      |   1     |
 | Grün       |  2      |   1      |   0     |
 | Gelb       |  3      |   1      |   1     |
-
-
 
 ### Ableitung der Gleichungen
 
@@ -787,34 +792,48 @@ $$Z' = Z + E$$
 |  3      |   1      |   1     |  0      |   1      |   0     |
 
 {{2-3}}
-$$A_{Rot} = (!FF_2 + !FF_1) \cdot (!FF_2 + FF_1) = !FF_2$$
-$$A_{Gelb} = (!FF_2 + FF_1) \cdot (FF_2 + FF_1) = FF_1$$
-$$A_{Grün} = FF_2 \cdot !FF_1$$
+$$A_{Rot} = (\overline{FF_2} + \overline{FF_1}) \cdot (\overline{FF_2} + FF_1) = \overline{FF_2}$$
+$$A_{Gelb} = (\overline{FF_2} + FF_1) \cdot (FF_2 + FF_1) = FF_1$$
+$$A_{Grün} = FF_2 \cdot \overline{FF_1}$$
 
-{{3-5}}
+{{3-6}}
 ** Schritt 2 - Zustandsübergangsfunktion Z**
 
-{{3-5}}
-| 2_s | 100_s | Z | FF2 | FF1 | Z' | FF2' | FF1' |
-|-----|-------|---|-----|-----|----|------|------|
-| 0   | 0     | 0 | 0   | 0   | 0  | 0    | 0    |
-| 0   | 0     | 1 | 0   | 1   | 1  | 0    | 1    |
-| 0   | 0     | 2 | 1   | 0   | 2  | 1    | 0    |
-| 0   | 0     | 3 | 1   | 1   | 3  | 1    | 1    |
-| 0   | 1     | 0 | 0   | 0   | 0  | 0    | 0    |
-| 0   | 1     | 1 | 0   | 1   | 1  | 0    | 1    |
-| 0   | 1     | 2 | 1   | 0   | 3  | 1    | 1    |
-| 0   | 1     | 3 | 1   | 1   | 3  | 1    | 1    |
-| 1   | 0     | 0 | 0   | 0   | 1  | 0    | 1    |
-| 1   | 0     | 1 | 0   | 1   | 2  | 1    | 0    |
-| 1   | 0     | 2 | 1   | 0   | 2  | 1    | 0    |
-| 1   | 0     | 3 | 1   | 1   | 0  | 0    | 0    |
+{{3-4}}
+| 2_s | 100_s | Z |Z'  |
+| 0   | 0     | 0 | 0  |
+| 0   | 0     | 1 | 1  |
+| 0   | 0     | 2 | 2  |
+| 0   | 0     | 3 | 3  |
+| 0   | 1     | 0 | 1  |
+| 0   | 1     | 1 | 1  |
+| 0   | 1     | 2 | 3  |
+| 0   | 1     | 3 | 3  |
+| 1   | 0     | 0 | 0  |
+| 1   | 0     | 1 | 2  |
+| 1   | 0     | 2 | 2  |
+| 1   | 0     | 3 | 0  |
 
 
-{{4-5}}
+{{4-6}}
+| 2_s | 100_s | Z | Z' | FF2 | FF1 | FF2' | FF1' |
+| 0   | 0     | 0 | 0  | 0   | 0   | 0    | 0    |
+| 0   | 0     | 1 | 1  | 0   | 1   | 0    | 1    |
+| 0   | 0     | 2 | 2  | 1   | 0   | 1    | 0    |
+| 0   | 0     | 3 | 3  | 1   | 1   | 1    | 1    |
+| 0   | 1     | 0 | 1  | 0   | 0   | 0    | 1    |
+| 0   | 1     | 1 | 1  | 0   | 1   | 0    | 1    |
+| 0   | 1     | 2 | 3  | 1   | 0   | 1    | 1    |
+| 0   | 1     | 3 | 3  | 1   | 1   | 1    | 1    |
+| 1   | 0     | 0 | 0  | 0   | 0   | 0    | 0    |
+| 1   | 0     | 1 | 2  | 0   | 1   | 1    | 0    |
+| 1   | 0     | 2 | 2  | 1   | 0   | 1    | 0    |
+| 1   | 0     | 3 | 0  | 1   | 1   | 0    | 0    |
+
+{{5-6}}
 Wie kann man diese Wertetabellen minimieren?
 
-{{4-5}}
+{{5-6}}
 ```python       solveBoolFunc.py
 from sympy.logic import SOPform
 from sympy import symbols
@@ -840,23 +859,32 @@ result = SOPform([x3, x2, x1, x0], FF2_minterms)
 print "FF2 = " + str(result)
 ```
 
-{{4-5}}
+{{5-6}}
 ```
-FF1 = (FF1 & ~2s) | (100s & FF2 & ~2s) | (2s & ~100s & ~FF1 & ~FF2)
+FF1 = (100s & ~2s) | (FF1 & ~2s)
 FF2 = (FF2 & ~2s) | (FF2 & ~100s & ~FF1) | (2s & FF1 & ~100s & ~FF2)
 ```
 
-{{4-5}}
-$$FF_1 =(FF_1 \cdot !2s) + (!2s \cdot 100s \cdot FF_2 ) + (2s \cdot !100s \cdot !FF_1 \cdot !FF_2)$$
-$$FF_2 =(FF_2 \cdot !2s) + (!100s \cdot FF_2 \cdot !FF_1) + (2s \cdot !100s \cdot FF_1 \cdot !FF_2)$$
+{{5-6}}
+$$FF_1 =(FF_1 \cdot \overline{2s}) + (\overline{2s} \cdot 100s)$$
+$$FF_2 =(FF_2 \cdot \overline{2s}) + (\overline{100s} \cdot FF_2 \cdot \overline{FF_1}) + (2s \cdot \overline{100s} \cdot FF_1 \cdot \overline{FF_2})$$
 
-## 4. Realsierung in der Simulation
+## 4. Realsierung
 
-Warum eigentlich Simulation?
+Eine der großen Herausforderungen in jedem Projekt ist die Wahl der geeigneten Umsetzungsebene. Welche Formate bieten sich für unser Projekt an?
 
+| Methode           | Bauteilkosten    | Entwurf        | Variabilität   |
+|:------------------|:-----------------|:---------------|:---------------|
+| Analoge Schaltung | minimal          | aufwändig      | gering         |
+| Digitale Logik    | gering           | einfach        | mittel         |
+| Software (eingebetteter $\mu$C) | überschaubar | einfach | hoch         |
+| Software (PC)     | hoch        | sehr einfach | hoch   |
 
+### ... mit ICs (zumindest in der Simulation)
 
-
+$$A_{Rot} = \overline{FF_2}; A_{Gelb} = FF_1; A_{Grün} = FF_2 \cdot \overline{FF_1}$$
+$$FF_1 =(FF_1 \cdot \overline{2s}) + (\overline{2s} \cdot 100s)$$
+$$FF_2 =(FF_2 \cdot \overline{2s}) + (\overline{100s} \cdot FF_2 \cdot \overline{FF_1}) + (2s \cdot \overline{100s} \cdot FF_1 \cdot \overline{FF_2})$$
 
 Warum brauchen wir einen Takt?
 
@@ -866,15 +894,10 @@ Warum brauchen wir einen Takt?
   * *   *----------+----*  *-->O-->l0
   *-+-+-+-]a---->o-+->d-*--+-*---->l2
   * * * *-># *--># *  #    * *>O>a>l3
-  * * * *    * *># **>c    *     ^
-  *-+-+-+-]a-* *   *"FF1"  *-----*
-  * *-+-+->#   *   *       *
-  * * *-+->#   *   *       *
-  * * * *      *   *       *
-  *-+-+-+->a---*   *       *
-  * *-+-+-]#       *       *
-  * * *-+-]#       *       *
-  * * * *-]#       *       *
+  * * * *    *     **>c    *     ^
+  *-+-+-+-]a-*     *"FF1"  *-----*
+  * *-+-+->#       *       *
+  * * * *          *       *
   * * * *          *"FF2"  *
   *-+-+-+-]a---->o-+->d-*--*
   * * *-+-># *--># *  # *
@@ -891,6 +914,14 @@ Warum brauchen wir einen Takt?
 ```
 @logic_emu
 
+### ... in Software
+
+```cpp
+\\ Beispielhafte Arduino Implmentierung
+\\ folgt noch
+
+```
+
 ## 5. Zusammenfassung und Ausblick
 
 __Ablauf beim Aufstellen eines Automaten__
@@ -899,7 +930,7 @@ __Ablauf beim Aufstellen eines Automaten__
 2. Modellierung als Automat
 3. Aufstellen der Wahrheitstafel
 4. Ableiten der Schaltfunktionen
-5. Realisieren des Schaltwerkes
+5. Realisieren in Hardware oder Software
 
 __Mängel oder Fragen hinsichtlich unserer Lösung__
 * Keine Berücksichtigung von gleichzeitig aktivem 2s und 100s
