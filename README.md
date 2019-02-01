@@ -769,13 +769,11 @@ style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-r
  ┴┴┴┴┴┴┴┴┴┴    2S  -->║           ║──────> Rot
  ┴───...──┴  100S  -->║   Ampel-  ║──────> Gelb
                       ║           ║──────> Grün
-                 .--->║           ║───╮
-                 |.-->║   Logik   ║--╮│
-                 ||.->║           ║-╮││
-                 |||  ╚═══════════╝ │││
-  ZUSTAND' Z'    ||'----------------╯││
-                 |'------------------╯│
-                 '--------------------╯
+                  .-->║   Logik   ║--╮ FF1
+                  |.->║           ║-╮│ FF2
+                  ||  ╚═══════════╝ ││
+  ZUSTAND' Z'     |'----------------╯│
+                  '------------------╯
 ````
 $$A = f(Z)$$
 $$Z' = Z + E$$
@@ -793,8 +791,8 @@ $$Z' = Z + E$$
 |  3      |   1      |   1     |  0      |   1      |   0     |
 
 {{2-3}}
-$$A_{Rot} = (\overline{FF_2} + \overline{FF_1}) \cdot (\overline{FF_2} + FF_1) = \overline{FF_2}$$
-$$A_{Gelb} = (\overline{FF_2} + FF_1) \cdot (FF_2 + FF_1) = FF_1$$
+$$A_{Rot} = (\overline{FF_2} \cdot \overline{FF_1}) + (\overline{FF_2} \cdot FF_1) = \overline{FF_2}$$
+$$A_{Gelb} = (\overline{FF_2} \cdot FF_1) + (FF_2 \cdot FF_1) = FF_1$$
 $$A_{Grün} = FF_2 \cdot \overline{FF_1}$$
 
 {{3-6}}
@@ -914,9 +912,48 @@ Warum brauchen wir einen Takt?
 ### ... in Software
 
 ```cpp
-\\ Beispielhafte Arduino Implmentierung
-\\ folgt noch
+typedef struct {
+    int state;
+    int next;
+    int A_red;
+    int A_yellow;
+    int A_green;
+    int timer;
+} ampel_state_t;
 
+ampel_state_t state_table[4] = {
+
+// state     A_red             timer
+//  |   next  |  A_yellow       |
+//  |    |    |   |    A_green  |
+//----------------------------------------------
+{   0,   1,   1,  0,    0,      10},
+{   1,   2,   1,  1,    0,      2 },
+{   2,   3,   0,  0,    1,      10},
+{   3,   0,   0,  1,    0,      2,}
+};
+
+const int greenPin = A0;
+const int yellowPin = 11;
+const int redPin = 13;
+int state = 0;
+
+void setup() {
+  pinMode(greenPin, OUTPUT);
+  pinMode(yellowPin, OUTPUT);
+  pinMode(redPin, OUTPUT);
+}
+
+void loop() {
+  if (state_table[state].A_red == 1) digitalWrite(redPin, HIGH);
+  else digitalWrite(redPin, LOW);
+  if (state_table[state].A_yellow == 1) digitalWrite(yellowPin, HIGH);
+  else digitalWrite(yellowPin, LOW);
+  if (state_table[state].A_green == 1) digitalWrite(greenPin, HIGH);
+  else digitalWrite(greenPin, LOW);
+  delay(state_table[state].timer*1000);
+  state =  state_table[state].next;
+}
 ```
 
 ## 5. Zusammenfassung und Ausblick
