@@ -525,9 +525,14 @@ Prof. Dr. Sebastian Zug, Technische Universität Bergakademie Freiberg
 
 ![Welcome](images/WorkingDesk.jpg "Experiments")<!-- width="80%" -->
 
+Code des Vortrages https://github.com/liaScript/StateMachines
+Präsentationsmodus [Link](https://liascript.github.io/course/?https://raw.githubusercontent.com/liaScript/StateMachines/master/README.md#1)
+
 ## 1. Einführung
 
 Studium der Angewandten Informatik an der Technischen Bergakademie Freiberg
+
+https://tu-freiberg.de/fakult1/inf
 
 ![Welcome](images/AInfFreiberg.jpeg "Überblick")<!-- width="80%" -->
 
@@ -910,6 +915,8 @@ Warum brauchen wir einen Takt?
 @logic_emu
 
 ### ... in Software
+
+Implementierung in C für einen Arduino Uno (Atmega 328 Controller)
 
 ```cpp
 typedef struct {
