@@ -20,8 +20,8 @@ Prof. Dr. Sebastian Zug, Technische Universität Bergakademie Freiberg
 
 ![Welcome](images/WorkingDesk.jpg "Experiments")<!-- width="80%" -->
 
-Code des Vortrages https://github.com/liaScript/StateMachines
-Präsentationsmodus [Link](https://liascript.github.io/course/?https://raw.githubusercontent.com/liaScript/StateMachines/master/README.md#1)
+Code des Vortrages https://github.com/SebastianZug/StateMachines
+Präsentationsmodus [Link](https://liascript.github.io/course/?https://raw.githubusercontent.com/SebastianZug/StateMachines/master/README.md#1)
 
 ## 1. Einführung
 
