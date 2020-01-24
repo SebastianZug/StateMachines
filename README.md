@@ -10,15 +10,15 @@ import: https://raw.githubusercontent.com/liaTemplates/logicemu/master/README.md
 import: https://raw.githubusercontent.com/liaScript/rextester_template/master/README.md
 -->
 
-# Vortrag "Anwendung und Realisierung von boolschen Funktionen"
+# Vortrag "Anwendung von boolschen Funktionen"
 
-**Samuel-von-Pufendorf-Gymnasiums, 1. Februar 2019**
+**Samuel-von-Pufendorf-Gymnasiums, Flöha, 24. Januar 2020**
 
 Prof. Dr. Sebastian Zug, Technische Universität Bergakademie Freiberg
 
 ------------------------------
 
-![Welcome](images/WorkingDesk.jpg "Experiments")<!-- width="80%" -->
+![Welcome](images/WorkingDesk.jpg "Experiments")<!-- height=70%" -->
 
 Code des Vortrages https://github.com/SebastianZug/StateMachines
 Präsentationsmodus [Link](https://liascript.github.io/course/?https://raw.githubusercontent.com/SebastianZug/StateMachines/master/README.md#1)
@@ -26,6 +26,10 @@ Präsentationsmodus [Link](https://liascript.github.io/course/?https://raw.githu
 ## 1. Einführung
 
 Studium der Angewandten Informatik an der Technischen Bergakademie Freiberg
+
+* Angewandte Informatik
+* Robotik
+* Internet der Energie
 
 https://tu-freiberg.de/fakult1/inf
 
@@ -35,13 +39,15 @@ https://tu-freiberg.de/fakult1/inf
 
 ## 2. Motivation des Beispiels
 
-Wieviel Informatik steckt in einer Verkehrsampel?
+Wieviel Informatik steckt in einer Lichtsignalanlage (Verkehrsampel)?
 
 ![Welcome](images/AmpelDresden-klein.jpg "Überblick")<!-- width="80%" -->
 
-Zielstellung: Koordination des Verkehrsflusses
+__Zielstellung__:
+* Koordination des Verkehrs auf einer Kreuzung / Verkehrslenkung
+* Informatiksicht: Zugangsberechtigung für eine Ressource (Kreuzung)
 
-Technische Herausforderungen:
+__Technische Herausforderungen__:
 * Vernetzung und Koordination der Ampeln selbst,
 * Adaption des Verhaltens
 * Interaktion mit den Verkehrsteilnehmern
@@ -66,26 +72,33 @@ Wie würden Sie den Ablauf beschreiben?
 style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
 -->
 ````ascii
-                   0       1        2       3       Zustand
+                            Zustände
+                   0       1       2       3       
 
-                  .-.     .-.      .-.      .-.
-  Rot            ( X )   ( X )    (   )    (   )
-                  '-'     '-'      '-'      '-'
+                  .-.     .-.     .-.     .-.
+  Rot            ( X )   ( X )   (   )   (   )
+                  '-'     '-'     '-'     '-'
 
-                  .-.     .-.      .-.      .-.
-  Gelb           (   )   ( X )    (   )    ( X )
-                  '-'     '-'      '-'      '-'
+                  .-.     .-.     .-.     .-.
+  Gelb           (   )   ( X )   (   )   ( X )
+                  '-'     '-'     '-'     '-'
 
-                  .-.     .-.      .-.      .-.
-  Grün           (   )   (   )    ( X )    (   )
-                  '-'     '-'      '-'      '-'
+                  .-.     .-.     .-.     .-.
+  Grün           (   )   (   )   ( X )   (   )
+                  '-'     '-'     '-'     '-'
 
              .-> 100s ---> 2s ---> 100s ---> 2s -.
              |                                   |
              .-----------------------------------.
 ````
 
+Die Einteilung der $100s$ ist hier willkürlich gewählt. Die Wahl dieses Parameters
+beeindlusst den Verkehr an der Kreuzung erheblich und variiert üblicherweise über dem Tagesverlauf.
+
 ### Zielstellung
+
+Was ist also unser Ziel? Ein System, dass in Abhängigkeit vom aktuellen Zustand
+und den Taktimpulsen einen neuen Zustand aktiviert.
 
 <!--
 style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
@@ -93,17 +106,17 @@ style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-r
 ```ascii
  EINGABEN                                  AUSGABEN
 
- Taktgeber            ╔═══════════╗
- ┴┴┴┴┴┴┴┴┴┴    2S  -->║           ║
- ┴───...──┴  100S  -->║   Ampel-  ║
-                      ║           ║───┬──> Rot
-                 .--->║           ║──┬┼──> Gelb
-                 |.-->║ steuerung ║─┬┼┼──> Grün
-                 ||.->║           ║ │││
-                 |||  ╚═══════════╝ │││
-                 ||'----------------╯││
-                 |'------------------╯│
-                 '--------------------╯
+ Taktgeber             ╔═══════════╗
+ ┴┴┴┴┴┴┴┴┴┴    2S   -->║           ║
+ ┴───...──┴  100S   -->║   Ampel-  ║
+                       ║           ║───┬──> Rot
+                 .---->║           ║──┬┼──> Gelb
+                 | .-->║ steuerung ║─┬┼┼──> Grün
+                 | |.->║           ║ │││
+                 | ||  ╚═══════════╝ |││
+                 | |.----------------.|│
+                 | .------------------.|
+                 .---------------------.
 ````
 
 Wie entwerfen wir eine Abstraktion, die diese Zusammenhänge abbildet und auf
@@ -114,8 +127,7 @@ verschiedenen Hardwareebenen realisierbar ist?
 
 **Einführungsbeispiel**
 
-Ein endlicher Automat (auch Zustandsmaschine, Zustandsautomat) ist ein Modell
-eines Verhaltens, bestehend aus Zuständen, Zustandsübergängen und Aktionen.
+> __Automat__ Ein endlicher Automat (englisch _finite_ _state_ _machine_) ist ein Modell eines Verhaltens, bestehend aus Zuständen, Zustandsübergängen und Aktionen. Ein Zustand speichert die Information über die Vergangenheit, d. h. er reflektiert in gewissem Umfang die Änderungen der Eingabe seit dem Systemstart bis zum aktuellen Zeitpunkt.
 
 Eine Tür lässt sich zum Beispiel mit zwei Zuständen beschreiben "auf" und "zu"
 
@@ -171,8 +183,8 @@ style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-r
                   |        v |        v |        v
                  .-.       .-.        .-.       .-.
  Ampelzustände  ( 0 )     ( 1 )      ( 2 )     ( 3 )
-                 '-'       '-'        '-'       '-'
-                  ^                              |
+                 '-' Rot   '-' Rot    '-' Grün  '-' Gelb
+                  ^            Gelb              |
                   |                              |
                   .------------- 2s -------------.
 ```
@@ -184,6 +196,12 @@ Wie verhält sich unser System für verschiedenen Kombinationen der Variablen 2s
 * `2s` ... ein Timer generiert kurzzeitig eine  "1", wenn ein 2 Sekundenintervall abgelaufen ist, dazwischen hat der Eingang den Wert "0"
 * `100s` ... ein 100-Sekundentimer generiert einen Wert "1"
 
+{{1-4}}
+*******************************************************************************
+__Welche Zustandsübergänge wollen wir realisieren?__
+
+********************************************************************************
+
 {{1-2}}
 | 2s  | 100s  |  Zustand  | Zustand neu |
 |:----|:------|:----------|:---------|
@@ -191,6 +209,7 @@ Wie verhält sich unser System für verschiedenen Kombinationen der Variablen 2s
 |  0  |  0    |    1      |   1      |
 |  0  |  0    |    2      |   2      |
 |  0  |  0    |    3      |   3      |
+
 
 {{2-3}}
 | 2s  | 100s |  Zustand  | Zustand' |
@@ -209,7 +228,7 @@ Wie verhält sich unser System für verschiedenen Kombinationen der Variablen 2s
 | <span style="color:red"> 1</span> |  <span style="color:red"> 0 </span>     |    <span style="color:red"> 3 </span>       |  <span style="color:red"> 0 </span>      |
 
 {{4-5}}
-Die Kombination `2_s = 1` und `100s = 1` bleibt hier unbeachtet.
+Die Kombination `2_s = 1` und `100s = 1` bleibt hier unbeachtet. Welches Problem sehen Sie, dass wir hier noch lösen müssen?
 
 ### Jetzt wird es digital
 
@@ -266,16 +285,17 @@ style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-r
 -->
 ```ascii
  EINGABEN E              CLOCK C           AUSGABEN A
+                            |
                             v
  Taktgeber            ╔═══════════╗
  ┴┴┴┴┴┴┴┴┴┴    2S  -->║           ║──────> Rot
  ┴───...──┴  100S  -->║   Ampel-  ║──────> Gelb
                       ║           ║──────> Grün
-                  .-->║   Logik   ║--╮ FF1
-                  |.->║           ║-╮│ FF2
-                  ||  ╚═══════════╝ ││
-  ZUSTAND' Z'     |'----------------╯│
-                  '------------------╯
+                  .-->║   Logik   ║--. FF1
+                  |.->║           ║-.| FF2
+                  ||  ╚═══════════╝ |│
+  ZUSTAND' Z'     |'----------------╯|
+                  '------------------.
 ```
 $$A = f(Z)$$
 $$Z' = Z + E$$
@@ -332,9 +352,61 @@ $$A_{Grün} = FF_2 \cdot \overline{FF_1}$$
 | 1   | 0     | 3 | 0  | 1   | 1   | 0    | 0    |
 
 {{5-6}}
-Wie kann man diese Wertetabellen minimieren?
+Wie kann man diese Wertetabellen minimieren? Nur vier Eingangsgrößen? Das lässt sich gut mit dem Karnaught-Veitch Diagramm lösen!
 
-{{5-6}}
+{{6-7}}
+<!--
+style="width: 60%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+-->
+```ascii
+                 __              __
+                 2s    2s   2s   2s
+                ____ ____
+                100s 100s 100s 100s   
+   ___    ___  +----+----+----+----+
+   FF1    FF2  |    |    |    |    |
+          ___  +----+----+----+----+
+   FF1    FF2  |    |    |    |    |
+               +----+----+----+----+
+   FF1    FF2  |    |    |    |    |
+   ___         +----+----+----+----+
+   FF1    FF2  |    |    |    |    |
+               +----+----+----+----+
+```
+
+{{7-8}}
+********************************************************************************
+<!--
+style="width: 60%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+-->
+```ascii
+                 __              __
+                 2s    2s   2s   2s
+                ____ ____
+                100s 100s 100s 100s   
+   ___    ___  +----+----+----+----+
+   FF1    FF2  |    |    |    |    |
+          ___  +----+----+----+----+
+   FF1    FF2  |    |  1 |    |    |
+               +----+----+----+----+
+   FF1    FF2  |  1 |    |    |  1 |
+   ___         +----+----+----+----+
+   FF1    FF2  |  1 |  1 |    |  1 |
+               +----+----+----+----+
+```
+
+Als Lösung ergibt sich entsprechend:
+
+$$FF_2' =(FF_2 \cdot \overline{2s}) + (\overline{100s} \cdot FF_2 \cdot \overline{FF_1}) + (2s \cdot \overline{100s} \cdot FF_1 \cdot \overline{FF_2})$$
+
+> __Aufgabe__: Vereinfachen Sie die Darstellung von $FF1'$ analog mit dem Karnaught-Veitch Diagramm.
+
+********************************************************************************
+
+         {{8-9}}
+******************************************************************************
+Ok, eine Menge Arbeit, dass muss doch auch einfacher gehen! Wir nutzen eine Python-Bibliothek um diese Aufgabe effizienter zu realisieren.
+
 ```python       solveBoolFunc.py
 from sympy.logic import SOPform
 from sympy import symbols
@@ -362,9 +434,11 @@ print "FF2 = " + (printing.ccode(result))
 ```
 @Rextester.eval(@Python,true)
 
-{{5-6}}
-$$FF_1 =(FF_1 \cdot \overline{2s}) + (\overline{2s} \cdot 100s)$$
-$$FF_2 =(FF_2 \cdot \overline{2s}) + (\overline{100s} \cdot FF_2 \cdot \overline{FF_1}) + (2s \cdot \overline{100s} \cdot FF_1 \cdot \overline{FF_2})$$
+
+$$FF_1' =  (\overline{2s} \cdot 100s) + (FF_1 \cdot \overline{2s})$$
+$$FF_2' =(FF_2 \cdot \overline{2s}) + (\overline{100s} \cdot FF_2 \cdot \overline{FF_1}) + (2s \cdot \overline{100s} \cdot FF_1 \cdot \overline{FF_2})$$
+
+******************************************************************************
 
 ## 4. Realsierung
 
@@ -423,9 +497,9 @@ typedef struct {
     int A_yellow;
     int A_green;
     int timer;
-} ampel_state_t;
+} tl_state_t;    // Traffic light state
 
-ampel_state_t state_table[4] = {
+tl_state_t states[4] = {
 
 // state     A_red             timer
 //  |   next  |  A_yellow       |
@@ -449,14 +523,14 @@ void setup() {
 }
 
 void loop() {
-  if (state_table[state].A_red == 1) digitalWrite(redPin, HIGH);
+  if (states[state].A_red == 1) digitalWrite(redPin, HIGH);
   else digitalWrite(redPin, LOW);
-  if (state_table[state].A_yellow == 1) digitalWrite(yellowPin, HIGH);
+  if (states[state].A_yellow == 1) digitalWrite(yellowPin, HIGH);
   else digitalWrite(yellowPin, LOW);
-  if (state_table[state].A_green == 1) digitalWrite(greenPin, HIGH);
+  if (states[state].A_green == 1) digitalWrite(greenPin, HIGH);
   else digitalWrite(greenPin, LOW);
-  delay(state_table[state].timer*1000);
-  state =  state_table[state].next;
+  delay(states[state].timer*1000);
+  state =  states[state].next;
 }
 ```
 
@@ -474,4 +548,6 @@ __Mängel oder Fragen hinsichtlich unserer Lösung__
 * Keine Berücksichtigung von gleichzeitig aktivem 2s und 100s
 * Wie setzen wir die Timer um?
 
-Vielen Dank für Ihr Interesse ...
+... diese Fragen beantworten wir dann im Rahmen Ihres Studiums :-)
+
+Vielen Dank für Ihr Interesse!
