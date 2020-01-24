@@ -550,4 +550,15 @@ __Mängel oder Fragen hinsichtlich unserer Lösung__
 
 ... diese Fragen beantworten wir dann im Rahmen Ihres Studiums :-)
 
-Vielen Dank für Ihr Interesse!
+
+<!--
+style="width: 80%; max-width: 660px; display: block; margin-left: auto; margin-right: auto;"
+-->
+```ascii
++=============================================================+
+| Informationstage / Schnupper-Events an der TU Bergakademie  |
+|    * Girlsday (26.03.2020)                                  |
+|    * Frühjahrsakademie (24.02. - 28.02.2020)                |
+|    * Campustag (16.05.2020)                                 |
++=============================================================+
+```
