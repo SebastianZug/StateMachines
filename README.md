@@ -6,9 +6,8 @@ version:  1.0.1
 language: de
 narrator: Deutsch Female
 
-import: https://raw.githubusercontent.com/liaTemplates/logicemu/master/README.md
 import: https://raw.githubusercontent.com/liaScript/rextester_template/master/README.md
-import:   https://raw.githubusercontent.com/LiaTemplates/DigiSim/master/README.md
+import: https://raw.githubusercontent.com/LiaTemplates/DigiSim/master/README.md
 
 -->
 
