@@ -8,6 +8,8 @@ narrator: Deutsch Female
 
 import: https://raw.githubusercontent.com/liaTemplates/logicemu/master/README.md
 import: https://raw.githubusercontent.com/liaScript/rextester_template/master/README.md
+import:   https://raw.githubusercontent.com/LiaTemplates/DigiSim/master/README.md
+
 -->
 
 # Vortrag "Anwendung von boolschen Funktionen"
@@ -239,12 +241,9 @@ Abbildung der Zustände durch einen binären Speicher, sogen. Flip-Flops (FF), w
 einzelner Flip-Flop ein Bit, also zwei unterschiedliche Zustände speichern
 kann.
 
-```D-FlipFlop.asci
-"Input"   s----->d----->l
-                 #
-"Clock"   p----->c
+``` json @DigiSim.evalJson
+{"devices":{"dev0":{"label":"data","type":"Button","propagation":0,"position":{"x":0,"y":37.5}},"dev1":{"label":"clock","type":"Button","propagation":0,"position":{"x":0,"y":95}},"dev2":{"label":"D-Flipflop","type":"Dff","propagation":0,"polarity":{"clock":true},"bits":1,"initial":"x","position":{"x":125,"y":60}},"dev3":{"label":"Output","type":"Lamp","propagation":0,"position":{"x":270,"y":55}}},"connectors":[{"from":{"id":"dev0","port":"out"},"to":{"id":"dev2","port":"in"}},{"from":{"id":"dev1","port":"out"},"to":{"id":"dev2","port":"clk"}},{"from":{"id":"dev2","port":"out"},"to":{"id":"dev3","port":"in"}}],"subcircuits":{}}
 ```
-@LogicEmu.eval
 
 Wie viele Flip-Flops brauchen wir für unsere Ampel?
 
@@ -459,31 +458,9 @@ $$FF_2 =(FF_2 \cdot \overline{2s}) + (\overline{100s} \cdot FF_2 \cdot \overline
 
 Warum brauchen wir einen Takt?
 
-```-ampel.asci
-"2s 100s"          p"Clock"
-  s s              *
-  * *   *----------+----*  *-->O-->l0
-  *-+-+-+-]a---->o-+->d-*--+-*---->l2
-  * * * *-># *--># *  #    * *>O>a>l3
-  * * * *    *     **>c    *     ^
-  *-+-+-+-]a-*     *"FF1"  *-----*
-  * *-+-+->#       *       *
-  * * * *          *       *
-  * * * *          *"FF2"  *
-  *-+-+-+-]a---->o-+->d-*--*
-  * * *-+-># *--># *  # *
-  * * * *    * *># **>c *
-  * *-+-+-]a-* *        *
-  * * *-+->#   *        *
-  * * * *-]#   *        *
-  * * * *      *        *
-  *-+-+-+->a---*        *
-    *-+-+-]#            *
-      *-+-]#            *
-      * *->#            *
-      *-----------------*
+``` json @DigiSim.evalJson
+{"devices":{"s2":{"label":"s2","type":"Button","propagation":0,"position":{"x":0,"y":35}},"s100":{"label":"s100","type":"Button","propagation":0,"position":{"x":20,"y":125}},"clk":{"label":"clk","type":"Button","propagation":0,"position":{"x":595,"y":145}},"rot":{"label":"rot","type":"Lamp","propagation":1,"position":{"x":1100,"y":15}},"gelb":{"label":"gelb","type":"Lamp","propagation":1,"position":{"x":1100,"y":90}},"gruen":{"label":"gruen","type":"Lamp","propagation":1,"position":{"x":1100,"y":170}},"dev4":{"label":"$and$dlatch_gate.sv:11$5","type":"And","propagation":1,"bits":1,"position":{"x":100,"y":-105}},"dev5":{"label":"$and$dlatch_gate.sv:12$6","type":"And","propagation":1,"bits":1,"position":{"x":50,"y":400}},"not1":{"label":"not1","type":"Not","propagation":1,"bits":1,"position":{"x":125,"y":25}},"not2":{"label":"not2","type":"Not","propagation":1,"bits":1,"position":{"x":105,"y":105}},"not3":{"label":"not3","type":"Not","propagation":1,"bits":1,"position":{"x":105,"y":185}},"not4":{"label":"not4","type":"Not","propagation":1,"bits":1,"position":{"x":120,"y":285}},"f":{"label":"f","type":"Dff","propagation":1,"polarity":{"clock":true},"bits":1,"initial":"x","position":{"x":795,"y":55}},"g":{"label":"g","type":"Dff","propagation":1,"polarity":{"clock":true},"bits":1,"initial":"x","position":{"x":760,"y":135}},"and1":{"label":"and1","type":"And","propagation":1,"bits":1,"position":{"x":265,"y":-30}},"and2":{"label":"and2","type":"And","propagation":1,"bits":1,"position":{"x":260,"y":35}},"and3":{"label":"and3","type":"And","propagation":1,"bits":1,"position":{"x":410,"y":20}},"and4":{"label":"and4","type":"And","propagation":1,"bits":1,"position":{"x":280,"y":100}},"and5":{"label":"and5","type":"And","propagation":1,"bits":1,"position":{"x":955,"y":165}},"and6":{"label":"and6","type":"And","propagation":1,"bits":1,"position":{"x":280,"y":275}},"and7":{"label":"and7","type":"And","propagation":1,"bits":1,"position":{"x":280,"y":215}},"and8":{"label":"and8","type":"And","propagation":1,"bits":1,"position":{"x":280,"y":155}},"and9":{"label":"and9","type":"And","propagation":1,"bits":1,"position":{"x":435,"y":125}},"or1":{"label":"or1","type":"Or","propagation":1,"bits":1,"position":{"x":555,"y":0}},"or2":{"label":"or2","type":"Or","propagation":1,"bits":1,"position":{"x":620,"y":80}},"or3":{"label":"or3","type":"Or","propagation":1,"bits":1,"position":{"x":540,"y":195}}},"connectors":[{"from":{"id":"s2","port":"out"},"to":{"id":"not1","port":"in"}},{"from":{"id":"s100","port":"out"},"to":{"id":"not2","port":"in"}},{"from":{"id":"f","port":"out"},"to":{"id":"not3","port":"in"},"vertices":[{"x":890,"y":395},{"x":85,"y":395}]},{"from":{"id":"g","port":"out"},"to":{"id":"not4","port":"in"},"vertices":[{"x":600,"y":365}]},{"from":{"id":"or2","port":"out"},"to":{"id":"f","port":"in"}},{"from":{"id":"or1","port":"out"},"to":{"id":"or2","port":"in1"}},{"from":{"id":"and3","port":"out"},"to":{"id":"or1","port":"in2"}},{"from":{"id":"and2","port":"out"},"to":{"id":"and3","port":"in2"}},{"from":{"id":"and1","port":"out"},"to":{"id":"or1","port":"in1"}},{"from":{"id":"and4","port":"out"},"to":{"id":"and9","port":"in1"}},{"from":{"id":"and8","port":"out"},"to":{"id":"and9","port":"in2"}},{"from":{"id":"or3","port":"out"},"to":{"id":"g","port":"in"}},{"from":{"id":"and9","port":"out"},"to":{"id":"or2","port":"in2"}},{"from":{"id":"and7","port":"out"},"to":{"id":"or3","port":"in1"}},{"from":{"id":"and6","port":"out"},"to":{"id":"or3","port":"in2"}},{"from":{"id":"not1","port":"out"},"to":{"id":"and1","port":"in1"}},{"from":{"id":"f","port":"out"},"to":{"id":"and1","port":"in2"},"vertices":[{"x":900,"y":395},{"x":85,"y":395},{"x":120,"y":245},{"x":220,"y":220}]},{"from":{"id":"not2","port":"out"},"to":{"id":"and3","port":"in1"}},{"from":{"id":"f","port":"out"},"to":{"id":"and2","port":"in1"},"vertices":[{"x":900,"y":395},{"x":85,"y":395},{"x":120,"y":245},{"x":220,"y":170}]},{"from":{"id":"not4","port":"out"},"to":{"id":"and2","port":"in2"}},{"from":{"id":"s2","port":"out"},"to":{"id":"and4","port":"in1"}},{"from":{"id":"not2","port":"out"},"to":{"id":"and4","port":"in2"}},{"from":{"id":"not3","port":"out"},"to":{"id":"and8","port":"in1"}},{"from":{"id":"g","port":"out"},"to":{"id":"and8","port":"in2"},"vertices":[{"x":595,"y":365},{"x":230,"y":365},{"x":230,"y":335}]},{"from":{"id":"not1","port":"out"},"to":{"id":"and7","port":"in1"}},{"from":{"id":"g","port":"out"},"to":{"id":"and7","port":"in2"},"vertices":[{"x":660,"y":365},{"x":240,"y":365}]},{"from":{"id":"clk","port":"out"},"to":{"id":"f","port":"clk"}},{"from":{"id":"clk","port":"out"},"to":{"id":"g","port":"clk"}},{"from":{"id":"not1","port":"out"},"to":{"id":"and6","port":"in1"}},{"from":{"id":"s100","port":"out"},"to":{"id":"and6","port":"in2"},"vertices":[{"x":100,"y":140},{"x":40,"y":225}]},{"from":{"id":"f","port":"out"},"to":{"id":"and5","port":"in1"}},{"from":{"id":"not4","port":"out"},"to":{"id":"and5","port":"in2"},"vertices":[{"x":390,"y":335}]},{"from":{"id":"not3","port":"out"},"to":{"id":"rot","port":"in"},"vertices":[{"x":210,"y":415},{"x":920,"y":415}]},{"from":{"id":"g","port":"out"},"to":{"id":"gelb","port":"in"}},{"from":{"id":"and5","port":"out"},"to":{"id":"gruen","port":"in"}}],"subcircuits":{}}
 ```
-@LogicEmu.eval
 
 ### ... in Software
 
