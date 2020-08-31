@@ -2,12 +2,14 @@
 
 author:   Sebastian Zug & André Dietrich
 email:    zug@ovgu.de   & andre.dietrich@ovgu.de
-version:  1.0.1
+version:  1.0.2
 language: de
 narrator: Deutsch Female
 
-import: https://raw.githubusercontent.com/liaScript/rextester_template/master/README.md
+import: https://github.com/LiaTemplates/Pyodide
 import: https://raw.githubusercontent.com/LiaTemplates/DigiSim/master/README.md
+
+@onload: window.py_packages = ["sympy"]
 
 -->
 
@@ -430,8 +432,7 @@ FF2_minterms = [[0, 0, 1, 0],
 result = SOPform([x3, x2, x1, x0], FF2_minterms)
 print "FF2 = " + (printing.ccode(result))
 ```
-@Rextester.eval(@Python,true)
-
+@Pyodide.eval
 
 $$FF_1' =  (\overline{2s} \cdot 100s) + (FF_1 \cdot \overline{2s})$$
 $$FF_2' =(FF_2 \cdot \overline{2s}) + (\overline{100s} \cdot FF_2 \cdot \overline{FF_1}) + (2s \cdot \overline{100s} \cdot FF_1 \cdot \overline{FF_2})$$
