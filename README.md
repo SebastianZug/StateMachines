@@ -7,7 +7,7 @@ language: de
 narrator: Deutsch Female
 
 import: https://raw.githubusercontent.com/liaTemplates/logicemu/master/README.md
-import: https://raw.githubusercontent.com/liaScript/rextester_template/master/README.md
+        https://github.com/LiaTemplates/AVR8js/main/README.md#10
 -->
 
 # Vortrag "Anwendung von boolschen Funktionen"
@@ -33,15 +33,15 @@ Studium der Angewandten Informatik an der Technischen Bergakademie Freiberg
 
 https://tu-freiberg.de/fakult1/inf
 
-![Welcome](images/AInfFreiberg.jpeg "Überblick")<!-- width="80%" -->
+![Welcome](images/AInfFreiberg.jpeg)<!-- width="80%" -->
 
 *"Hacken kann jeder, da brauche ich kein \[Informatik-\] Studium"* \[Forenbeitrag\]
 
 ## 2. Motivation des Beispiels
 
-Wieviel Informatik steckt in einer Lichtsignalanlage (Verkehrsampel)?
+Wie viel Informatik steckt in einer Lichtsignalanlage (Verkehrsampel)?
 
-![Welcome](images/AmpelDresden-klein.jpg "Überblick")<!-- width="80%" -->
+![Welcome](images/AmpelDresden-klein.jpg)<!-- width="80%" -->
 
 __Zielstellung__:
 * Koordination des Verkehrs auf einer Kreuzung / Verkehrslenkung
@@ -487,9 +487,15 @@ Warum brauchen wir einen Takt?
 
 ### ... in Software
 
-Implementierung in C für einen Arduino Uno (Atmega 328 Controller)
+Das folgende Beispiel zeigt die Implementierung in C für einen Arduino Uno (Atmega 328 Controller). Führen Sie den Code aus und erklären Sie anhand des Codes, wie unser Ampelautomat sich hier wiederfindet.
 
-```cpp
+<div>
+  <wokwi-led color="red" pin="13" port="B" label="13"></wokwi-led>
+  <wokwi-led color="yellow" pin="12" port="B" label="12"></wokwi-led>
+  <wokwi-led color="green" pin="11" port="B" label="11"></wokwi-led>
+  <span id="simulation-time"></span>
+</div>
+```cpp       arduino.cpp
 typedef struct {
     int state;
     int next;
@@ -505,14 +511,14 @@ tl_state_t states[4] = {
 //  |   next  |  A_yellow       |
 //  |    |    |   |    A_green  |
 //----------------------------------------------
-{   0,   1,   1,  0,    0,      10},
-{   1,   2,   1,  1,    0,      2 },
-{   2,   3,   0,  0,    1,      10},
-{   3,   0,   0,  1,    0,      2,}
+{   0,   1,   1,  0,    0,      5},
+{   1,   2,   1,  1,    0,      1 },
+{   2,   3,   0,  0,    1,      5},
+{   3,   0,   0,  1,    0,      1,}
 };
 
-const int greenPin = A0;
-const int yellowPin = 11;
+const int greenPin = 11;
+const int yellowPin = 12;
 const int redPin = 13;
 int state = 0;
 
@@ -533,6 +539,7 @@ void loop() {
   state =  states[state].next;
 }
 ```
+@AVR8js.sketch
 
 ## 5. Zusammenfassung und Ausblick
 
