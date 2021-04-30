@@ -205,6 +205,7 @@ __Welche Zustandsübergänge wollen wir realisieren?__
 ********************************************************************************
 
 {{1-2}}
+<!--data-type="none"-->
 | 2s  | 100s  |  Zustand  | Zustand neu |
 |:----|:------|:----------|:---------|
 |  0  |  0    |    0      |   0      |
@@ -214,6 +215,7 @@ __Welche Zustandsübergänge wollen wir realisieren?__
 
 
 {{2-3}}
+<!--data-type="none"-->
 | 2s  | 100s |  Zustand  | Zustand' |
 |:----|:------|:----------|:---------|
 | <span style="color:red"> 0 </span> |  <span style="color:red"> 1 </span>     |    <span style="color:red"> 0 </span>       |  <span style="color:red"> 1 </span>      |
@@ -241,6 +243,8 @@ Abbildung der Zustände durch einen binären Speicher, sogen. Flip-Flops (FF), w
 einzelner Flip-Flop ein Bit, also zwei unterschiedliche Zustände speichern
 kann.
 
+> Testen Sie das Verhalten an einer kleinen Simulation eines D-Flip-Flops!
+
 ``` json @DigiSim.evalJson
 {"devices":{"dev0":{"label":"data","type":"Button","propagation":0,"position":{"x":0,"y":37.5}},"dev1":{"label":"clock","type":"Button","propagation":0,"position":{"x":0,"y":95}},"dev2":{"label":"D-Flipflop","type":"Dff","propagation":0,"polarity":{"clock":true},"bits":1,"initial":"x","position":{"x":125,"y":60}},"dev3":{"label":"Output","type":"Lamp","propagation":0,"position":{"x":270,"y":55}}},"connectors":[{"from":{"id":"dev0","port":"out"},"to":{"id":"dev2","port":"in"}},{"from":{"id":"dev1","port":"out"},"to":{"id":"dev2","port":"clk"}},{"from":{"id":"dev2","port":"out"},"to":{"id":"dev3","port":"in"}}],"subcircuits":{}}
 ```
@@ -264,6 +268,7 @@ style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-r
 ```
 
 {{2-3}}
+<!--data-type="none"-->
 | Ampelphase | Zustand | FF2      | FF1     |
 |:-----------|:--------|:---------|:--------|
 | Rot        |  0      |   0      |   0     |
@@ -304,6 +309,7 @@ $$Z' = Z + E$$
 ** Schritt 1 - Ausgabefunktionen A**
 
 {{1-3}}
+<!--data-type="none"-->
 | Zustand | FF2      | FF1     |  A_Rot  | A_Gelb   | A_Grün  |
 |:--------|:---------|:--------|:--------|:---------|:--------|
 |  0      |   0      |   0     |  1      |   0      |   0     |
@@ -320,6 +326,7 @@ $$A_{Grün} = FF_2 \cdot \overline{FF_1}$$
 ** Schritt 2 - Zustandsübergangsfunktion Z**
 
 {{3-4}}
+<!--data-type="none"-->
 | 2_s | 100_s | Z |Z'  |
 | 0   | 0     | 0 | 0  |
 | 0   | 0     | 1 | 1  |
@@ -336,6 +343,7 @@ $$A_{Grün} = FF_2 \cdot \overline{FF_1}$$
 
 
 {{4-6}}
+<!--data-type="none"-->
 | 2_s | 100_s | Z | Z' | FF2 | FF1 | FF2' | FF1' |
 | 0   | 0     | 0 | 0  | 0   | 0   | 0    | 0    |
 | 0   | 0     | 1 | 1  | 0   | 1   | 0    | 1    |
@@ -404,7 +412,7 @@ $$FF_2' =(FF_2 \cdot \overline{2s}) + (\overline{100s} \cdot FF_2 \cdot \overlin
 
          {{8-9}}
 ******************************************************************************
-Ok, eine Menge Arbeit, dass muss doch auch einfacher gehen! Wir nutzen eine Python-Bibliothek um diese Aufgabe effizienter zu realisieren.
+Ok, eine Menge Arbeit, dass muss doch auch einfacher gehen! Wir nutzen eine Python-Bibliothek um diese Aufgabe effizienter zu realisieren. Das folgende Skript übernimmt diese Aufgabe. Verändern Sie probeweise die `FF1_minterms` und die `FF2_minterms` Definitionen.
 
 ```python       solveBoolFunc.py
 from sympy.logic import SOPform
@@ -420,7 +428,7 @@ FF1_minterms = [[0, 0, 0, 1],
                 [0, 1, 1, 0],
                 [0, 1, 1, 1],]
 result = SOPform([x3, x2, x1, x0], FF1_minterms)
-print "FF1 = " + (printing.ccode(result))
+print("FF1 = " + (printing.ccode(result)))
 
 FF2_minterms = [[0, 0, 1, 0],
                 [0, 0, 1, 1],
@@ -429,7 +437,7 @@ FF2_minterms = [[0, 0, 1, 0],
                 [1, 0, 0, 1],
                 [1, 0, 1, 0],]
 result = SOPform([x3, x2, x1, x0], FF2_minterms)
-print "FF2 = " + (printing.ccode(result))
+print("FF2 = " + (printing.ccode(result)))
 ```
 @Pyodide.eval
 
@@ -491,9 +499,9 @@ tl_state_t states[4] = {
 //  |   next  |  A_yellow       |
 //  |    |    |   |    A_green  |
 //----------------------------------------------
-{   0,   1,   1,  0,    0,      5},
+{   0,   1,   1,  0,    0,      3},
 {   1,   2,   1,  1,    0,      1 },
-{   2,   3,   0,  0,    1,      5},
+{   2,   3,   0,  0,    1,      3},
 {   3,   0,   0,  1,    0,      1,}
 };
 
