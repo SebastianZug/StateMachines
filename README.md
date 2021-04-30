@@ -2,7 +2,7 @@
 
 author:   Sebastian Zug & André Dietrich
 email:    zug@ovgu.de   & andre.dietrich@ovgu.de
-version:  1.1.3
+version:  1.1.4
 language: de
 narrator: Deutsch Female
 
@@ -61,9 +61,7 @@ __Technische Herausforderungen__:
 Unsere Herausforderung heute ... Implementierung einer einzelnen
 Ampelanlage.
 
-![Welcome](images/Ampelsimulation.gif "Ampelablauf")<!-- width="10%" --> [^1]
-
-[^1]:https://wiki.byte-welt.net/wiki/Simulation_einer_Verkehrsampel
+![Welcome](images/Ampelsimulation.gif "Ampelablauf [^1]")<!-- width="30%" --> 
 
 Wie würden Sie den Ablauf beschreiben?
 
@@ -96,6 +94,8 @@ style="width: 80%; max-width: 460px; display: block; margin-left: auto; margin-r
 
 Die Einteilung der $100s$ ist hier willkürlich gewählt. Die Wahl dieses Parameters
 beeindlusst den Verkehr an der Kreuzung erheblich und variiert üblicherweise über dem Tagesverlauf.
+
+[^1]:https://wiki.byte-welt.net/wiki/Simulation_einer_Verkehrsampel
 
 ### Zielstellung
 
