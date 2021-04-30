@@ -2,7 +2,7 @@
 
 author:   Sebastian Zug & André Dietrich
 email:    zug@ovgu.de   & andre.dietrich@ovgu.de
-version:  1.1.4
+version:  1.1.5
 language: de
 narrator: Deutsch Female
 
@@ -224,6 +224,7 @@ __Welche Zustandsübergänge wollen wir realisieren?__
 |  0  |  1    |    3      |   3      |
 
 {{3-4}}
+<!--data-type="none"-->
 | 2s  | 100s |  Zustand  | Zustand' |
 |:----|:------|:----------|:---------|
 |  1  |  0    |    0      |   0      |
