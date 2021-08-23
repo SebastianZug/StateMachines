@@ -2,7 +2,7 @@
 
 author:   Sebastian Zug & André Dietrich
 email:    zug@ovgu.de   & andre.dietrich@ovgu.de
-version:  1.1.5
+version:  1.1.6
 language: de
 narrator: Deutsch Female
 
@@ -14,7 +14,7 @@ import: https://raw.githubusercontent.com/liaTemplates/logicemu/master/README.md
 
 # Vortrag "Anwendung von boolschen Funktionen"
 
-**Samuel-von-Pufendorf-Gymnasiums, Flöha, 24. Januar 2020**
+**Schüleruniversität, Freiberg, 23. August 2021**
 
 Prof. Dr. Sebastian Zug, Technische Universität Bergakademie Freiberg
 
@@ -546,15 +546,3 @@ __Mängel oder Fragen hinsichtlich unserer Lösung__
 
 ... diese Fragen beantworten wir dann im Rahmen Ihres Studiums :-)
 
-
-<!--
-style="width: 80%; max-width: 660px; display: block; margin-left: auto; margin-right: auto;"
--->
-```ascii
-+=============================================================+
-| Informationstage / Schnupper-Events an der TU Bergakademie  |
-|    * Girlsday (26.03.2020)                                  |
-|    * Frühjahrsakademie (24.02. - 28.02.2020)                |
-|    * Campustag (16.05.2020)                                 |
-+=============================================================+
-```
