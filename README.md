@@ -2,7 +2,7 @@
 
 author:   Sebastian Zug & André Dietrich
 email:    zug@ovgu.de   & andre.dietrich@ovgu.de
-version:  1.1.6
+version:  1.1.7
 language: de
 narrator: Deutsch Female
 
@@ -16,7 +16,7 @@ import: https://raw.githubusercontent.com/liaTemplates/logicemu/master/README.md
 
 # Vortrag "Automaten - Entwurf und technische Realisierung"
 
-**Frühjahrsakademie Mathematik 2022, Freiberg, 22. Januar 2022**
+**Frühjahrsakademie Mathematik 2022, Mittwoch, 23. Januar 2022**
 
 Prof. Dr. Sebastian Zug, Technische Universität Bergakademie Freiberg
 
