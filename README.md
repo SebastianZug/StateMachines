@@ -12,6 +12,8 @@ import: https://raw.githubusercontent.com/liaTemplates/logicemu/master/README.md
         https://github.com/LiaTemplates/Pyodide
 -->
 
+[![LiaScript](https://raw.githubusercontent.com/LiaScript/LiaScript/master/badges/course.svg)](https://liascript.github.io/course/?https://raw.githubusercontent.com/SebastianZug/StateMachines/master/README.md#1)
+
 # Vortrag "Automaten - Entwurf und technische Realisierung"
 
 **Frühjahrsakademie Mathematik 2022, Freiberg, 22. Januar 2022**
@@ -22,8 +24,7 @@ Prof. Dr. Sebastian Zug, Technische Universität Bergakademie Freiberg
 
 ![Welcome](images/WorkingDesk.jpg "Experiments")<!-- height=70%" -->
 
-Code des Vortrages https://github.com/SebastianZug/StateMachines
-Präsentationsmodus [Link](https://liascript.github.io/course/?https://raw.githubusercontent.com/SebastianZug/StateMachines/master/README.md#1)
+> "Code" des Vortrages https://github.com/SebastianZug/StateMachines als Open Educational Ressource.
 
 ## 1. Einführung
 
