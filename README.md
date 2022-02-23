@@ -12,9 +12,9 @@ import: https://raw.githubusercontent.com/liaTemplates/logicemu/master/README.md
         https://github.com/LiaTemplates/Pyodide
 -->
 
-# Vortrag "Anwendung von boolschen Funktionen"
+# Vortrag "Automaten - Entwurf und technische Realisierung"
 
-**Schüleruniversität, Freiberg, 23. August 2021**
+**Frühjahrsakademie Mathematik 2022, Freiberg, 22. Januar 2022**
 
 Prof. Dr. Sebastian Zug, Technische Universität Bergakademie Freiberg
 
@@ -31,7 +31,6 @@ Studium der Angewandten Informatik an der Technischen Bergakademie Freiberg
 
 * Angewandte Informatik
 * Robotik
-* Internet der Energie
 
 https://tu-freiberg.de/fakult1/inf
 
@@ -43,13 +42,15 @@ https://tu-freiberg.de/fakult1/inf
 
 Wie viel Informatik steckt in einer Lichtsignalanlage (Verkehrsampel)?
 
-![Welcome](images/AmpelDresden-klein.jpg)<!-- width="80%" -->
+![Welcome](images/AmpelDresden-klein.jpg "Ampelanlage in Dresden")<!-- width="80%" -->
 
 __Zielstellung__:
+
 * Koordination des Verkehrs auf einer Kreuzung / Verkehrslenkung
 * Informatiksicht: Zugangsberechtigung für eine Ressource (Kreuzung)
 
 __Technische Herausforderungen__:
+
 * Vernetzung und Koordination der Ampeln selbst,
 * Adaption des Verhaltens
 * Interaktion mit den Verkehrsteilnehmern
@@ -61,7 +62,7 @@ __Technische Herausforderungen__:
 Unsere Herausforderung heute ... Implementierung einer einzelnen
 Ampelanlage.
 
-![Welcome](images/Ampelsimulation.gif "Ampelablauf [^1]")<!-- width="30%" --> 
+![Welcome](images/Ampelsimulation.gif "Ampelablauf [^1]")<!-- width="30%" -->
 
 Wie würden Sie den Ablauf beschreiben?
 
@@ -131,9 +132,17 @@ verschiedenen Hardwareebenen realisierbar ist?
 
 > __Automat__ Ein endlicher Automat (englisch _finite_ _state_ _machine_) ist ein Modell eines Verhaltens, bestehend aus Zuständen, Zustandsübergängen und Aktionen. Ein Zustand speichert die Information über die Vergangenheit, d. h. er reflektiert in gewissem Umfang die Änderungen der Eingabe seit dem Systemstart bis zum aktuellen Zeitpunkt.
 
+                                  {{0-4}}
+********************************************************************************
+
 Eine Tür lässt sich zum Beispiel mit zwei Zuständen beschreiben "auf" und "zu"
 
-Bespiel:
+Beispiel:
+
+********************************************************************************
+
+                                   {{0-1}}
+********************************************************************************
 
 <!--
 style="width: 100%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
@@ -143,18 +152,50 @@ style="width: 100%; max-width: 460px; display: block; margin-left: auto; margin-
 
                   .--------- schließen ----------.
                   |                              |
-                  |                              v
+                  |                              v  
                  .-.                            .-.
- Zustände       (auf)                          (zu )
-                 '-'                            '-'
+ Zustände       (auf)                          (zu )   
+                 '-'                            '-'                
                   ^                              |
+                  |                              |
+                  .----------- öffnen -----------.                  .
+```
+
++ Eingaben $\{schließen, öffnen\}$
++ Zustände $\{auf, zu\}$
+
+********************************************************************************
+
+                                   {{1-4}}
+********************************************************************************
+
+<!--
+style="width: 100%; max-width: 460px; display: block; margin-left: auto; margin-right: auto;"
+-->
+```ascii
+                  Zustandsübergang (Transition)
+
+                  .--------- schließen ----------.
+                  |                              |
+                  |                              v  .--.
+                 .-.                            .-./   | schließen
+ Zustände       (auf)<--.                      (zu )<--.   
+                 '-'\   | öffnen                '-'  
+                  ^  .--.                        |
                   |                              |
                   .----------- öffnen -----------.
 ```
 
-{{1-4}} Der Übergang lässt sich dabei mit einer *Zustandsübergangstabelle* darstellen.
++ Eingaben $\{schließen, öffnen\}$
++ Zustände $\{auf, zu\}$
 
-{{1-4}}
+********************************************************************************
+
+                                   {{2-4}}
+********************************************************************************
+
+Der Übergang lässt sich dabei mit einer *Zustandsübergangstabelle* darstellen.
+
 | Eingabe $E$   | alter Zustand $Z$ | neuer Zustand $Z'$ |
 |:-----------|:--------------|:--------------|
 | öffnen     | offen         | offen         |
@@ -162,17 +203,23 @@ style="width: 100%; max-width: 460px; display: block; margin-left: auto; margin-
 | schließen  | offen         | zu            |
 | schließen  | zu            | zu            |
 
-{{2-4}} Ausgehend vom Zustand soll nun noch eine Ausgabe erfolgen, zum Beispiel
+********************************************************************************
+
+                                   {{3-4}}
+********************************************************************************
+
+Ausgehend vom Zustand soll nun noch eine Ausgabe erfolgen, zum Beispiel
 ein Warnlicht aktiviert werden
 
-{{2-4}}
 | Zustand $Z$ | Ausgabe   $A$   |
 |:------------|:----------------|
 | offen       | Warnlicht       |
 | zu          | Warnlicht aus   |
 
-{{3-4}}
-> Zusammenfassung: Ein endlicher Automat bildet Eingabegrößen $E$ auf Zustände $Z$
+********************************************************************************
+
+{{4}}
+> __Zusammenfassung__: Ein endlicher Automat bildet Eingabegrößen $E$ auf Zustände $Z$
 > und Ausgabegrößen $A$ ab.
 
 ### ... angewandt auf die Ampel
@@ -303,7 +350,7 @@ style="width: 70%; max-width: 460px; display: block; margin-left: auto; margin-r
                   '------------------.
 ```
 $$A = f(Z)$$
-$$Z' = Z + E$$
+$$Z' =g(Z, E)$$
 
 
 {{1-3}}
@@ -541,8 +588,8 @@ __Ablauf beim Aufstellen eines Automaten__
 5. Realisieren in Hardware oder Software
 
 __Mängel oder Fragen hinsichtlich unserer Lösung__
+
 * Keine Berücksichtigung von gleichzeitig aktivem 2s und 100s
 * Wie setzen wir die Timer um?
 
 ... diese Fragen beantworten wir dann im Rahmen Ihres Studiums :-)
-
